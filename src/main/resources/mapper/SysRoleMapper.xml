@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pjjlt.easyfile.moudle.mapper.SysRoleMapper">
+
+    <select id="getList" resultType="com.pjjlt.easyfile.moudle.entity.SysRole">
+        select sysRole.*
+        from sys_role sysRole
+        left join sys_user_role sysUserRole on sysRole.id = sysUserRole.role_id
+        <where>
+            <if test="userId != null">
+                and sysUserRole.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="getPage" resultType="com.pjjlt.easyfile.moudle.entity.SysRole">
+        select sysRole.*
+        from sys_role sysRole
+        left join sys_user_role sysUserRole on sysRole.id = sysUserRole.role_id
+        <where>
+            <if test="sysRoleModel.roleName != null and sysRoleModel.roleName != ''">
+                and sys_role.role_name  like CONCAT('%', trim(#{sysRoleModel.roleName}),'%')
+            </if>
+            <if test="sysRoleModel.projectId != null">
+                and sysUserRole.project_id = #{sysRoleModel.projectId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

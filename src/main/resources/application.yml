@@ -1,0 +1,39 @@
+server:
+  port: 4310
+  undertow:
+    direct-buffers: true
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    # 配置返回数据库(column下划线命名&&返回java实体是驼峰命名)，自动匹配无需as（没开启这个，SQL需要写as： select user_id as userId）
+    map-underscore-to-camel-case: true
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: merchant-product
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 100
+      auto-commit: true
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://148.70.47.194:3306/easy_file?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+    username: root
+    password: Root-123
+
+easy:
+  expire-time: 21600
+  default-head-img: default_head_img

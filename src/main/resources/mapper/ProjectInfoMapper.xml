@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pjjlt.easyfile.moudle.mapper.ProjectInfoMapper">
+
+    <select id="getPage" resultType="com.pjjlt.easyfile.moudle.entity.ProjectInfo">
+        select *
+        from project_info projectInfo
+        left join sys_user_project sysUserProject on projectInfo.id = sysUserProject.project_id
+        <where>
+            <if test="projectInfoModel.keyword != null and projectInfoModel.keyword != ''">
+                and (projectInfo.project_name like CONCAT('%', trim(#{projectInfoModel.keyword}),'%')
+                    or projectInfo.project_name like CONCAT('%', trim(#{projectInfoModel.description}),'%'))
+            </if>
+            <if test="projectInfoModel.currentUserId != null">
+                and sysUserProject.user_id = #{projectInfoModel.currentUserId}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pjjlt.easyfile.moudle.mapper.ProjectFileMapper">
+
+    <select id="selectInfoById" resultType="cn.hutool.json.JSONObject">
+        select
+        projectFile.id as id,
+        projectFileDetail.detail as detail,
+        projectFile.file_name as fileName,
+        projectFile.file_status as fileStatus,
+        projectFolder.folder_name as folderName,
+        projectInfo.project_name as projectName,
+        sysUser.user_name as userName
+        from project_file projectFile
+        inner join project_file_detail projectFileDetail on projectFile.id = projectFileDetail.id
+        left join sys_user sysUser on projectFile.user_id = sysUser.id
+        left join project_folder projectFolder on projectFile.folder_id = projectFolder.id
+        left join project_info projectInfo on projectFile.project_id = projectInfo.id
+        <where>
+            projectFile.id = #{id}
+        </where>
+    </select>
+
+    <select id="getPage" resultType="cn.hutool.json.JSONObject">
+        select
+        projectFile.id as id,
+        projectFile.file_name as fileName,
+        projectFile.create_time as createTime,
+        projectFile.modify_time as modifyTime,
+        projectFolder.folder_name as folderName,
+        projectInfo.project_name as projectName,
+        sysUser.user_name as userName
+        from project_file projectFile
+        left join sys_user sysUser on projectFile.user_id = sysUser.id
+        left join project_folder projectFolder on projectFile.folder_id = projectFolder.id
+        left join project_info projectInfo on projectFile.project_id = projectInfo.id
+        <where>
+            projectFile.project_id = #{projectFileModel.projectId}
+            <if test="projectFileModel.folderId != null">
+                and projectFile.folder_id = #{projectFileModel.folderId}
+            </if>
+            <if test="projectFileModel.fileStatus != null">
+                and projectFile.file_status = #{projectFileModel.fileStatus}
+            </if>
+            <if test="projectFileModel.keyword != null and projectFileModel.keyword != ''">
+                and ( sysUser.user_name like CONCAT('%', trim(#{projectFileModel.keyword}),'%') or
+                projectFile.file_name like CONCAT('%', trim(#{projectFileModel.keyword}),'%') )
+            </if>
+        </where>
+    </select>
+</mapper>
